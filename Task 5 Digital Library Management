@@ -1,0 +1,154 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+class Book
+{
+    private String title;
+    private String author;
+    private int quantity;
+    public Book(String title, String author, int quantity)
+    {
+        this.title = title;
+        this.author = author;
+        this.quantity = quantity;
+    }
+    public String getTitle()
+    {
+        return title;
+    }
+    public String getAuthor()
+    {
+        return author;
+    }
+    public int getQuantity()
+    {
+        return quantity;
+    }
+    public void decreaseQuantity()
+    {
+        if (quantity > 0) {
+            quantity--;
+        }
+    }
+    public void increaseQuantity()
+    {
+        quantity++;
+    }
+}
+
+class Library
+{
+    private Map<String, Book> books = new HashMap<>();
+    private List<String> users = new ArrayList<>();
+
+    public void addBook(String title, String author, int quantity)
+    {
+        Book book = new Book(title, author, quantity);
+        books.put(title, book);
+    }
+
+    public void addUser(String username)
+    {
+        users.add(username);
+    }
+
+    public boolean isValidUser(String username)
+    {
+        return users.contains(username);
+    }
+
+    public void displayBooks()
+    {
+        System.out.println("Library Catalog:");
+        for (Book book : books.values()) {
+            System.out.println("Title: " + book.getTitle() + " | Author: " + book.getAuthor() + " | Quantity: " + book.getQuantity());
+        }
+    }
+
+    public void issueBook(String title)
+    {
+        Book book = books.get(title);
+        if (book != null && book.getQuantity() > 0) {
+            book.decreaseQuantity();
+            System.out.println("Book '" + title + "' issued successfully.");
+        }
+        else
+        {
+            System.out.println("Book '" + title + "' not available for issuance.");
+        }
+    }
+
+    public void returnBook(String title)
+    {
+        Book book = books.get(title);
+        if (book != null)
+        {
+            book.increaseQuantity();
+            System.out.println("Book '" + title + "' returned successfully.");
+        }
+        else
+        {
+            System.out.println("Book '" + title + "' not found.");
+        }
+    }
+}
+
+class LibraryManagementSystem
+{
+    public static void main(String[] args)
+    {
+        Scanner scanner = new Scanner(System.in);
+        Library library = new Library();
+
+        library.addBook("Diary of a Wimpy Kid", "Jeff Kinney", 5);
+        library.addBook("Percy Jackson", "Rick Riordan", 3);
+        library.addBook("Harry Potter", "J. K. Rowling", 8);
+        library.addBook("400 Days", "Chetan Bhagat", 6);
+        library.addUser("admin");
+
+        System.out.print("Enter your username: ");
+        String username = scanner.nextLine();
+
+        if (library.isValidUser(username))
+        {
+            while (true)
+            {
+                System.out.println("\nOptions:");
+                System.out.println("1. Display Books");
+                System.out.println("2. Issue a Book");
+                System.out.println("3. Return a Book");
+                System.out.println("4. Exit");
+
+                int choice = Integer.parseInt(scanner.nextLine());
+
+                switch (choice)
+                {
+                    case 1:
+                        library.displayBooks();
+                        break;
+                    case 2:
+                        System.out.print("Enter the title of the book you want to issue: ");
+                        String issueTitle = scanner.nextLine();
+                        library.issueBook(issueTitle);
+                        break;
+                    case 3:
+                        System.out.print("Enter the title of the book you want to return: ");
+                        String returnTitle = scanner.nextLine();
+                        library.returnBook(returnTitle);
+                        break;
+                    case 4:
+                        System.out.println("Exiting the library system. Goodbye!");
+                        System.exit(0);
+                    default:
+                        System.out.println("Invalid choice. Please select a valid option.");
+                }
+            }
+        }
+        else
+        {
+            System.out.println("Invalid username. You don't have access to the library system.");
+        }
+    }
+}
